@@ -12,9 +12,10 @@ _ns = {}
 def _write_files(files_json):
     import shutil
     files = json.loads(files_json)
-    if os.path.exists(PROJ):
-        shutil.rmtree(PROJ)
     os.makedirs(PROJ, exist_ok=True)
+    for entry in os.listdir(PROJ):
+        ep = os.path.join(PROJ, entry)
+        shutil.rmtree(ep) if os.path.isdir(ep) else os.remove(ep)
     for f in files:
         p = os.path.join(PROJ, f["path"])
         os.makedirs(os.path.dirname(p), exist_ok=True)

@@ -99,15 +99,44 @@ function Workspace() {
     }
   }
 
-  async function run() {
+  async function run(override?: FileRow[]) {
     if (!active) return;
     setTab("output");
     setOutput([{ kind: "info", text: `▶ python ${active}\n` }]);
+    const p = override ? { files: override.map(({ path, content }) => ({ path, content })), packages } : payload();
     await guard(async () => {
-      const r = await rt.current!.send<{ ok: boolean; images: string[] }>("run", { ...payload(), path: active });
+      const r = await rt.current!.send<{ ok: boolean; images: string[] }>("run", { ...p, path: active });
       pushImages(r.images);
       setOutput((o) => [...o, { kind: "info", text: r.ok ? "✓ finished\n" : "✗ exited with error\n" }]);
     });
+  }
+
+  const [aiPrompt, setAiPrompt] = useState("");
+  const [aiBusy, setAiBusy] = useState(false);
+  async function askAi(e: React.FormEvent) {
+    e.preventDefault();
+    if (!activeFile || !aiPrompt.trim()) return;
+    setAiBusy(true);
+    try {
+      const { code } = await generateCode({
+        data: {
+          prompt: aiPrompt,
+          currentCode: activeFile.content,
+          fileName: activeFile.path,
+          otherFiles: files.filter((f) => f.id !== activeFile.id).map((f) => f.path),
+        },
+      });
+      const next = files.map((f) => (f.id === activeFile.id ? { ...f, content: code } : f));
+      setFiles(next);
+      setEditorKey((k) => k + 1);
+      await supabase.from("project_files").update({ content: code, updated_at: new Date().toISOString() }).eq("id", activeFile.id);
+      setAiPrompt("");
+      await run(next);
+    } catch (err) {
+      toast.error((err as Error).message);
+    } finally {
+      setAiBusy(false);
+    }
   }
 
   function stop() {

@@ -63,7 +63,7 @@ export async function generatePython(args: {
     throw new Error(e.message ?? "AI request failed.");
   }
   const match = text.match(/```(?:python|py)?\s*\n([\s\S]*?)```/);
-  const code = (match ? match[1] : text).trim() + "\n";
+  const code = (match?.[1] ?? text).trim() + "\n";
   if (!code.trim()) throw new Error("The AI didn't return any code. Try rephrasing your request.");
   return { code };
 }

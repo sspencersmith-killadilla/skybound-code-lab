@@ -110,7 +110,8 @@ def _test():
     return json.dumps({"results": results})
 `;
 
-type Msg = { id: number; type: string; [k: string]: unknown };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Msg = any;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let pyodide: any = null;

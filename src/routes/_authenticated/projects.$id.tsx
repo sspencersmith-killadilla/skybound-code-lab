@@ -119,9 +119,9 @@ function Workspace() {
   async function addFile() {
     const path = prompt("File name", "utils.py")?.trim();
     if (!path) return;
-    if (files.some((f) => f.path === path)) return toast.error("File already exists");
+    if (files.some((f) => f.path === path)) { toast.error("File already exists"); return; }
     const { data, error } = await supabase.from("project_files").insert({ project_id: id, path, content: "" }).select("id,path,content").single();
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     setFiles((fs) => [...fs, data].sort((a, b) => a.path.localeCompare(b.path)));
     setActive(path);
   }
@@ -130,7 +130,7 @@ function Workspace() {
     const path = prompt("Rename to", f.path)?.trim();
     if (!path || path === f.path) return;
     const { error } = await supabase.from("project_files").update({ path }).eq("id", f.id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     setFiles((fs) => fs.map((x) => (x.id === f.id ? { ...x, path } : x)));
     if (active === f.path) setActive(path);
   }
@@ -361,7 +361,7 @@ function FunctionsView({
     const unsub = rt.current!.subscribe((l) => l.kind === "stderr" && errs.push(l.text));
     await guard(async () => {
       const r = await rt.current!.send<{ ok: boolean; result?: string }>("call", { ...payload(), path, name: fn.name, args: a });
-      setResults((s) => ({ ...s, [fn.name]: { ok: r.ok, text: r.ok ? r.result! : errs.join("").trim().split("\n").slice(-1)[0] } }));
+      setResults((s) => ({ ...s, [fn.name]: { ok: r.ok, text: r.ok ? (r.result ?? "") : (errs.join("").trim().split("\n").slice(-1)[0] ?? "Error") } }));
     });
     unsub();
   }
@@ -406,9 +406,9 @@ function FunctionsView({
             <Play className="mr-1 h-3 w-3" /> Call
           </Button>
           {results[fn.name] && (
-            <pre className={`mt-2 whitespace-pre-wrap font-mono text-xs ${results[fn.name].ok ? "text-success" : "text-destructive"}`}>
-              {results[fn.name].ok ? "→ " : ""}
-              {results[fn.name].text}
+            <pre className={`mt-2 whitespace-pre-wrap font-mono text-xs ${results[fn.name]!.ok ? "text-success" : "text-destructive"}`}>
+              {results[fn.name]!.ok ? "→ " : ""}
+              {results[fn.name]!.text}
             </pre>
           )}
         </div>

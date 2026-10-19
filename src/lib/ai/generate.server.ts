@@ -53,7 +53,7 @@ export async function generatePython(args: {
         include: ["reasoning.encrypted_content"],
       },
     },
-  } as Parameters<typeof streamText>[0]);
+  });
 
   const text = await result.text;
   if (streamError) {

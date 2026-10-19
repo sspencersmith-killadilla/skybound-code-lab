@@ -2,7 +2,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { python } from "@codemirror/lang-python";
-import { oneDark } from "@codemirror/theme-one-dark";
 import { toast } from "sonner";
 import { ArrowLeft, Play, Square, FilePlus, Trash2, Pencil, FlaskConical, RefreshCw, Sparkles, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,9 +14,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 export const Route = createFileRoute("/_authenticated/projects/$id")({
   head: () => ({
     meta: [
-      { title: "Workspace — PyBench" },
+      { title: "Workspace — Tinker" },
       { name: "description", content: "Edit and run your Python project." },
-      { property: "og:title", content: "Workspace — PyBench" },
+      { property: "og:title", content: "Workspace — Tinker" },
       { property: "og:description", content: "Edit and run your Python project." },
     ],
   }),
@@ -255,7 +254,6 @@ function Workspace() {
               key={activeFile.id + ":" + editorKey}
               value={activeFile.content}
               height="100%"
-              theme={oneDark}
               extensions={[python()]}
               onChange={updateContent}
               className="h-full text-sm"

@@ -1,12 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "PyBench — Run Python in your browser" },
+      { title: "Tinker — Run Python in your browser" },
       { name: "description", content: "A cloud Python workspace: run scripts, call functions, plot charts and run tests." },
-      { property: "og:title", content: "PyBench — Run Python in your browser" },
+      { property: "og:title", content: "Tinker — Run Python in your browser" },
       { property: "og:description", content: "Run scripts, call functions, plot charts and run tests — saved to your account." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -24,9 +25,7 @@ function Index() {
   return (
     <div className="min-h-screen bg-background">
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
-        <span className="font-mono text-lg font-semibold">
-          <span className="text-primary">&gt;_</span> PyBench
-        </span>
+        <Logo />
         <Button asChild variant="ghost">
           <Link to="/auth">Sign in</Link>
         </Button>

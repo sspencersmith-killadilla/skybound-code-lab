@@ -11,3 +11,4 @@
 
 - Python execution runs client-side in a Pyodide Web Worker (src/lib/py-worker.ts) — no server compute, and Stop works by terminating the worker.
 - Project/file CRUD uses the browser Lovable Cloud client with owner-scoped RLS — no server functions needed for this data.
+- AI code generation runs in a createServerFn (src/lib/ai/generate.functions.ts) behind requireSupabaseAuth, so the AI key and prompt stay server-side; generated code then executes client-side like any user code.

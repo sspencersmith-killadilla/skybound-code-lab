@@ -86,8 +86,8 @@ function Workspace() {
     images?.forEach((b64) => setOutput((o) => [...o, { kind: "image", text: b64 }]));
   }
 
-  async function guard<T>(fn: () => Promise<T>) {
-    if (!rt.current) return;
+  async function guard<T>(fn: () => Promise<T>): Promise<T | undefined> {
+    if (!rt.current) return undefined;
     setBusy(true);
     try {
       return await fn();

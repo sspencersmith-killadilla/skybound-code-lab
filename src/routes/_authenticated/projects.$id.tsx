@@ -297,7 +297,9 @@ function Workspace() {
 
 function OutputView({ lines }: { lines: OutLine[] }) {
   const end = useRef<HTMLDivElement>(null);
-  useEffect(() => end.current?.scrollIntoView(), [lines]);
+  useEffect(() => {
+    end.current?.scrollIntoView();
+  }, [lines]);
   if (!lines.length) return <p className="text-sm text-muted-foreground">Press Run to see output here.</p>;
   return (
     <div className="font-mono text-xs leading-relaxed">

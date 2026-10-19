@@ -93,6 +93,7 @@ function Workspace() {
       return await fn();
     } catch (e) {
       setOutput((o) => [...o, { kind: "stderr", text: (e as Error).message + "\n" }]);
+      return undefined;
     } finally {
       setBusy(false);
     }

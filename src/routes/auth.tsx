@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Logo } from "@/components/Logo";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,10 +11,10 @@ import { Label } from "@/components/ui/label";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Sign in — PyBench" },
-      { name: "description", content: "Sign in to your PyBench Python workspace." },
-      { property: "og:title", content: "Sign in — PyBench" },
-      { property: "og:description", content: "Sign in to your PyBench Python workspace." },
+      { title: "Sign in — Tinker" },
+      { name: "description", content: "Sign in to your Tinker Python workspace." },
+      { property: "og:title", content: "Sign in — Tinker" },
+      { property: "og:description", content: "Sign in to your Tinker Python workspace." },
     ],
   }),
   component: AuthPage,
@@ -67,9 +68,7 @@ function AuthPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="w-full max-w-sm rounded-lg border bg-card p-8">
-        <div className="mb-6 font-mono text-lg font-semibold">
-          <span className="text-primary">&gt;_</span> PyBench
-        </div>
+        <Logo className="mb-6" />
         <h1 className="text-2xl font-bold">{mode === "in" ? "Welcome back" : "Create account"}</h1>
         <form onSubmit={submit} className="mt-6 space-y-4">
           <div className="space-y-2">

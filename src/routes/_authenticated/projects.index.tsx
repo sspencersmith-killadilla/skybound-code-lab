@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { Logo } from "@/components/Logo";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Trash2, Plus, LogOut } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,9 +8,9 @@ import { Button } from "@/components/ui/button";
 export const Route = createFileRoute("/_authenticated/projects/")({
   head: () => ({
     meta: [
-      { title: "Your projects — PyBench" },
+      { title: "Your projects — Tinker" },
       { name: "description", content: "All your saved Python projects." },
-      { property: "og:title", content: "Your projects — PyBench" },
+      { property: "og:title", content: "Your projects — Tinker" },
       { property: "og:description", content: "All your saved Python projects." },
     ],
   }),
@@ -81,9 +82,7 @@ function Projects() {
   return (
     <div className="mx-auto min-h-screen max-w-4xl px-6 py-10">
       <div className="flex items-center justify-between">
-        <span className="font-mono text-lg font-semibold">
-          <span className="text-primary">&gt;_</span> PyBench
-        </span>
+        <Logo />
         <Button variant="ghost" size="sm" onClick={signOut}>
           <LogOut className="mr-2 h-4 w-4" /> Sign out
         </Button>

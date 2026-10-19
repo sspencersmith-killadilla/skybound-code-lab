@@ -4,8 +4,9 @@ import CodeMirror from "@uiw/react-codemirror";
 import { python } from "@codemirror/lang-python";
 import { oneDark } from "@codemirror/theme-one-dark";
 import { toast } from "sonner";
-import { ArrowLeft, Play, Square, FilePlus, Trash2, Pencil, FlaskConical, RefreshCw } from "lucide-react";
+import { ArrowLeft, Play, Square, FilePlus, Trash2, Pencil, FlaskConical, RefreshCw, Sparkles, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { generateCode } from "@/lib/ai/generate.functions";
 import { PythonRuntime, type OutLine } from "@/lib/python-runtime";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,6 +38,7 @@ function Workspace() {
   const [busy, setBusy] = useState(false);
   const [ready, setReady] = useState(false);
   const [tab, setTab] = useState("output");
+  const [editorKey, setEditorKey] = useState(0);
   const rt = useRef<PythonRuntime | null>(null);
   const saveTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
 
@@ -199,7 +201,7 @@ function Workspace() {
               <Square className="mr-2 h-3 w-3" /> Stop
             </Button>
           )}
-          <Button size="sm" onClick={run} disabled={busy || !active}>
+          <Button size="sm" onClick={() => run()} disabled={busy || !active}>
             <Play className="mr-2 h-3 w-3" /> Run {active}
           </Button>
         </div>
@@ -231,10 +233,26 @@ function Workspace() {
           ))}
         </aside>
 
-        <main className="min-w-0 flex-1 overflow-auto">
+        <main className="flex min-w-0 flex-1 flex-col">
+          <form onSubmit={askAi} className="flex items-center gap-2 border-b bg-panel px-3 py-2">
+            <Sparkles className="h-4 w-4 shrink-0 text-primary" />
+            <Input
+              value={aiPrompt}
+              onChange={(e) => setAiPrompt(e.target.value)}
+              placeholder={activeFile ? `Describe what ${activeFile.path} should do — e.g. "plot a sine wave"` : "Open a file first"}
+              disabled={aiBusy || !activeFile}
+              aria-label="Describe the code you want"
+              className="h-8"
+            />
+            <Button type="submit" size="sm" disabled={aiBusy || busy || !activeFile || !aiPrompt.trim()}>
+              {aiBusy ? <Loader2 className="mr-2 h-3 w-3 animate-spin" /> : <Play className="mr-2 h-3 w-3" />}
+              {aiBusy ? "Writing…" : "Generate & run"}
+            </Button>
+          </form>
+          <div className="min-h-0 flex-1 overflow-auto">
           {activeFile ? (
             <CodeMirror
-              key={activeFile.id}
+              key={activeFile.id + ":" + editorKey}
               value={activeFile.content}
               height="100%"
               theme={oneDark}
@@ -245,6 +263,7 @@ function Workspace() {
           ) : (
             <div className="p-8 text-muted-foreground">Create a file to get started.</div>
           )}
+          </div>
         </main>
 
         <section className="flex w-[420px] shrink-0 flex-col border-l bg-panel">

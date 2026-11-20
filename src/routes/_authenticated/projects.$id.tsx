@@ -7,6 +7,7 @@ import { ArrowLeft, Play, Square, FilePlus, Trash2, Pencil, FlaskConical, Refres
 import { supabase } from "@/integrations/supabase/client";
 import { generateCode } from "@/lib/ai/generate.functions";
 import { PythonRuntime, type OutLine } from "@/lib/python-runtime";
+import { OutputView } from "@/components/OutputView";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -18,6 +19,8 @@ export const Route = createFileRoute("/_authenticated/projects/$id")({
       { name: "description", content: "Edit and run your Python project." },
       { property: "og:title", content: "Workspace — Tinker" },
       { property: "og:description", content: "Edit and run your Python project." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Workspace,
@@ -291,31 +294,6 @@ function Workspace() {
           </Tabs>
         </section>
       </div>
-    </div>
-  );
-}
-
-function OutputView({ lines }: { lines: OutLine[] }) {
-  const end = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    end.current?.scrollIntoView();
-  }, [lines]);
-  if (!lines.length) return <p className="text-sm text-muted-foreground">Press Run to see output here.</p>;
-  return (
-    <div className="font-mono text-xs leading-relaxed">
-      {lines.map((l, i) =>
-        l.kind === "image" ? (
-          <img key={i} src={`data:image/png;base64,${l.text}`} alt="Plot" className="my-2 w-full rounded bg-foreground" />
-        ) : (
-          <pre
-            key={i}
-            className={`whitespace-pre-wrap ${l.kind === "stderr" ? "text-destructive" : l.kind === "info" ? "text-muted-foreground" : l.kind === "result" ? "text-success" : ""}`}
-          >
-            {l.text}
-          </pre>
-        ),
-      )}
-      <div ref={end} />
     </div>
   );
 }

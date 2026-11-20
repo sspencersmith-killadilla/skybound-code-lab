@@ -12,6 +12,8 @@ export const Route = createFileRoute("/_authenticated/projects/")({
       { name: "description", content: "All your saved Python projects." },
       { property: "og:title", content: "Your projects — Tinker" },
       { property: "og:description", content: "All your saved Python projects." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Projects,
